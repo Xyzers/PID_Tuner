@@ -1,0 +1,19 @@
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Dossiers d'environnement virtuel (si vous en utilisez)
+venv/
+.venv/
+env/
+.env/
+
+# Fichiers de configuration d'IDE (optionnel)
+.vscode/
+.idea/
+
+# Fichiers de données volumineux (exemple, à adapter)
+# data/mon_gros_fichier.csv

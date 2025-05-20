@@ -1,0 +1,64 @@
+[General]
+; Nom de base pour le fichier de log. Si vide, utilise le nom du script (pid_tuner).
+log_file_base_name = ./trace/pid_tuner_repro_reel
+; Niveaux de log possibles : DEBUG, INFO, WARNING, ERROR, CRITICAL
+log_level = DEBUG ; Mettez DEBUG pour une analyse fine
+
+[ModeleProcede]
+; Chemins vers le modèle de procédé entraîné et les scalers
+model_path = C:\Users\EDVA10053293\OneDrive - Groupe Avril\08 - Marchine Learning\Jupyter\Regulation PID\Pid_Model\trained_TIC4401.joblib
+scalers_path = C:\Users\EDVA10053293\OneDrive - Groupe Avril\08 - Marchine Learning\Jupyter\Regulation PID\Pid_Model\scalers_TIC4401.joblib
+
+; Lags utilisés lors de l'entraînement du modèle (important pour le fallback si scaler_X.feature_names_in_ échoue)
+pv_lags = 10
+mv_lags = 10
+sp_lags = 10
+kp_hist_lags = 0 ; Normalement 0 si non utilisé comme feature
+ti_hist_lags = 0 ; Normalement 0
+td_hist_lags = 0 ; Normalement 0
+disturbance_1_lags = 1 ; Mettez le nombre de lags avec lequel le modèle a été entraîné pour Dist1
+disturbance_2_lags = 1 ; Mettez le nombre de lags avec lequel le modèle a été entraîné pour Dist2 (ou 0 si non utilisé)
+disturbance_3_lags = 0 ; Si vous avez une Dist3
+
+[ParametresPIDBase]
+tsamp_pid_sim_ms = 100 ; Correspond à vos données (1 point par seconde)
+mv_min = 0.0            ; Limite basse de la MV réelle (à vérifier)
+mv_max = 100.0          ; Limite haute de la MV réelle (vos données MV montent à ~80, donc 100 est une marge)
+direct_action = true    ; MV augmente si SP > PV
+
+[ScenarioSimulation]
+simulation_duration_seconds = 330 ; Pour couvrir de 21:34:52 à 21:40:22 (5min 30s)
+
+initial_pv = 60.0
+initial_mv = 29.43
+
+; ---- Consigne (SP) ----
+setpoint_type = constant
+sp_constant_value = 90.0
+; sp_steps =               ; Pas d'échelon de SP dans cet extrait
+
+; ---- Disturbance 1 ----
+disturbance1_type = step
+disturbance1_initial_value = 1.0 ; Valeur au début de la simulation
+; Dist1 passe à 0 à 21:40:10.
+; Début simulation équivalent à 21:34:52.
+; Durée avant changement de Dist1 = (21:40:10 - 21:34:52) = 5 minutes et 18 secondes = 318 secondes.
+disturbance1_steps = 318, 0.0
+
+; ---- Disturbance 2 ----
+disturbance2_type = constant
+disturbance2_initial_value = 0.0
+disturbance2_constant_value = 0.0
+; disturbance2_steps =          ; Pas de changement pour Dist2 dans cet extrait
+
+lags_initialization_mode = constant
+
+[JeuxDeReglagePID]
+; Utiliser les paramètres réels du PID pour ce test de reproduction
+set1 = 1.0, 18.6, 4.5, PID_Reel_Reproduction
+
+[Sortie]
+results_plot_path = ./trace/pid_tuner_repro_reel_comparaison_plot.png
+results_metrics_csv = ./trace/pid_tuner_repro_reel_metriques.csv
+plot_individual_runs = true
+individual_runs_plot_dir = ./trace/repro_reel_runs_individuels/
