@@ -533,13 +533,13 @@ def run_closed_loop_simulation(config, nom_jeu_reglage, Kp, Ti, Td,
         pv_predite_scaled = modele_procede.predict(input_X_modele_scaled)
         pv_suivante = scaler_y.inverse_transform(pv_predite_scaled.reshape(-1, 1)).ravel()[0]
         # CORRECTION ICI :
-        logger.debug(f"Étape {i_step}: input_X_df_modele (avant scale):\n{input_X_df_modele.head().to_string()}") # UTILISER input_X_df_modele
+        logger.debug(f"Étape {i_step}: input_X_df_modele (avant scale):\n{input_X_df_modele.to_string()}") # UTILISER input_X_df_modele
 
         # ET ICI AUSSI pour la variable des données scalées:
-        logger.debug(f"Étape {i_step}: input_X_modele_scaled (1ere ligne):\n{input_X_modele_scaled[0]}")
+        logger.debug(f"Étape {i_step}: input_X_modele_scaled:\n{np.array2string(input_X_modele_scaled)}")
 
         # ET ICI pour la variable pv prédite déscalée:
-        logger.debug(f"Étape {i_step}: predicted_pv_scaled: {pv_predite_scaled[0]}, pv_suivante (déscalé): {pv_suivante}")
+        logger.debug(f"Étape {i_step}: predicted_pv_scaled:\n{np.array2string(pv_predite_scaled)}, pv_suivante (déscalé): {pv_suivante}")
         
         resultats_sim['Time'].append(t_actuel)
         resultats_sim['SP'].append(sp_actuelle)
